@@ -23,7 +23,7 @@ urlpatterns = [
     path('api/topics/<str:topicName>/pictures/<int:pictureID>/comments/',
          commentController.Comments.as_view(), name='Comments'),
 
-    path('api/topics/<str:topicName>/pictures/<int:pictureID>/comments/<int:commentID>',
+    path('api/topics/<str:topicName>/pictures/<int:pictureID>/comments/<int:commentID>/',
          commentController.CommentController.as_view(), name='Comments'),
 
     path('hello/', views.HelloView.as_view(), name='hello'),

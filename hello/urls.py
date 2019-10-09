@@ -3,6 +3,7 @@ from hello import views
 from hello.controllers import topicController
 from django.contrib import admin
 from django.urls import include, path, re_path
+
 import re
 
 from rest_framework_simplejwt import views as jwt_views
@@ -10,7 +11,7 @@ from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     path("bam/", views.home, name="home"),
-    path('api/topics/', topicController.TopicController.as_view(), name='Topics'),
+    path('api/topics/', topicController.Topics.as_view(), name='Topics'),
     path('api/topics/<int:topicID>', topicController.TopicController.as_view(), name='Topics'),
     path('hello/', views.HelloView.as_view(), name='hello'),
 

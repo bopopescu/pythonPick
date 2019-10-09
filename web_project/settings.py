@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'corsheaders',
-    'hello.models.topic',
+    'hello'
 ]
 
 MIDDLEWARE = [

@@ -15,19 +15,28 @@ from django.core import serializers
 
 class TopicController(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request):
-        return JsonResponse({"status": 201, "message": "Successful get"}, safe=False, status=201)
-    def post(self, request):  
-        return JsonResponse({"status": 201, "message": "Successfully created/post"}, safe=False, status=201)
-    def put(self, request):
-        return JsonResponse({"status": 201, "message": "Put successful"}, safe=False, status=201)
-    def delete(self, request):
-        return JsonResponse({"status": 201, "message": "Delete successful"}, safe=False, status=201)
+    def get(self, request, topicName):
+        try:
+            topic = Topic.objects.get(name=topicName)
+        except:
+            return JsonResponse({"status": 422, "message": "Can't get topic object from database"}
+            , safe=False, status=422)
+        topic_list = serializers.serialize('json', [topic, ])
+        return HttpResponse(topic_list, content_type="text/json-comment-filtered", status=201)
+
+    def post(self, request, topicName):
+        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+
+    def put(self, request, topicName):
+        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+
+    def delete(self, request, topicName):
+        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
 class Topics(APIView):
     #permission_classes = (IsAuthenticated,)
     def get(self, request):
-       #opic1 = Topic.objects.create_instance("Cars", 0)
+        #topic1 = Topic.objects.create_instance("Cosmos", 0)
         #serialized_topic = serializers.serialize('json', topic1)
         topics = Topic.objects.all()
         topic_list = serializers.serialize('json', topics)

@@ -12,7 +12,7 @@ from rest_framework_simplejwt import views as jwt_views
 urlpatterns = [
     path("bam/", views.home, name="home"),
     path('api/topics/', topicController.Topics.as_view(), name='Topics'),
-    path('api/topics/<int:topicID>', topicController.TopicController.as_view(), name='Topics'),
+    path('api/topics/<str:topicName>/', topicController.TopicController.as_view(), name='Topics'),
     path('hello/', views.HelloView.as_view(), name='hello'),
 
     

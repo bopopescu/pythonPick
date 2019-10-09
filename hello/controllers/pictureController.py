@@ -15,21 +15,21 @@ from django.core import serializers
 
 class PictureController(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request, topicName):
+    def get(self, request, topicName, pictureID):
         try:
-            topic = Topic.objects.get(name=topicName)
+            picture = Picture.objects.get(pictureID=pictureID)
         except:
             return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
-        topic_list = serializers.serialize('json', [topic, ])
-        return HttpResponse(topic_list, content_type="text/json-comment-filtered", status=201)
+        picture_list = serializers.serialize('json', [picture, ])
+        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
 
-    def post(self, request, topicName):
+    def post(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def put(self, request, topicName):
+    def put(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def delete(self, request, topicName):
+    def delete(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
 

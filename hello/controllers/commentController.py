@@ -13,45 +13,45 @@ from hello.models import *
 from django.core import serializers
 
 
-class PictureController(APIView):
+class CommentController(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request, topicName):
+    def get(self, request, topicName, pictureID, commentID):
         try:
-            topic = Topic.objects.get(name=topicName)
+            comment = Comment.objects.get(commentID=commentID)
         except:
             return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
-        topic_list = serializers.serialize('json', [topic, ])
-        return HttpResponse(topic_list, content_type="text/json-comment-filtered", status=201)
+        comment_list = serializers.serialize('json', [comment, ])
+        return HttpResponse(comment_list, content_type="text/json-comment-filtered", status=201)
 
-    def post(self, request, topicName):
+    def post(self, request, topicName, pictureID, commentID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def put(self, request, topicName):
+    def put(self, request, topicName, pictureID, commentID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def delete(self, request, topicName):
+    def delete(self, request, topicName, pictureID, commentID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
 
-class Pictures(APIView):
+class Comments(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request, topicName):
-        try:
-            topic = Topic.objects.get(name=topicName)
-            picture1 = Picture.objects.create_instance(
-                "asfdasasdasdf.jpeg", 0, 15, 5, topic, "adaaasd")
-            pictures = Picture.objects.filter(topicName=topicName)
-            picture_list = serializers.serialize('json', pictures)
-        except:
-            return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
+    def get(self, request, topicName, pictureID):
+        #try:
+            picture = Picture.objects.get(pictureID=pictureID)
+            comment1 = Comment.objects.create_instance(
+                "Labai grazi foto", 0, 15, "aasdasd", picture)
+            comments = Comment.objects.filter(pictureID=pictureID)
+            comment_list = serializers.serialize('json', comments)
+        #except:
+            #return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
 
-        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
+            return HttpResponse(comment_list, content_type="text/json-comment-filtered", status=201)
 
-    def post(self, request, topicName):
+    def post(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def put(self, request, topicName):
+    def put(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def delete(self, request, topicName):
+    def delete(self, request, topicName, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)

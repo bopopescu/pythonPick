@@ -44,7 +44,7 @@ class Pictures(APIView):
             picture_list = serializers.serialize('json', pictures)
         except:
             return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
-    
+
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
 
     def post(self, request, topicName):

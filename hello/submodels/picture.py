@@ -1,9 +1,10 @@
 from django.db import models
+from hello.submodels.topic import *
 
 class PictureManager(models.Manager):
-    def create_instance(self, pictureUrl, likes, dislikes, numberOfComments, authorID):
+    def create_instance(self, pictureUrl, likes, dislikes, numberOfComments,topicName, authorID):
         instance = self.create(pictureUrl = pictureUrl, likes=likes, dislikes=dislikes,
-                               numberOfComments=numberOfComments, authorID=authorID)
+                               numberOfComments=numberOfComments, topicName = topicName, authorID=authorID)
         # do something with the book
         return instance
 
@@ -14,5 +15,6 @@ class Picture(models.Model):
     dislikes = models.IntegerField()
     numberOfComments = models.IntegerField()
     # foreign key in the
+    topicName = models.ForeignKey(Topic, on_delete=models.CASCADE, default='UNSPECIFIED')
     authorID = models.CharField(max_length=20)
     objects = PictureManager()

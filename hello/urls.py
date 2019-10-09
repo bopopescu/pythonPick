@@ -1,6 +1,6 @@
 from django.urls import path
 from hello import views
-from hello.controllers import topicController
+from hello.controllers import topicController, pictureController
 from django.contrib import admin
 from django.urls import include, path, re_path
 
@@ -13,6 +13,8 @@ urlpatterns = [
     path("bam/", views.home, name="home"),
     path('api/topics/', topicController.Topics.as_view(), name='Topics'),
     path('api/topics/<str:topicName>/', topicController.TopicController.as_view(), name='Topics'),
+    path('api/topics/<str:topicName>/pictures',
+         pictureController.Pictures.as_view(), name='Pictures'),
     path('hello/', views.HelloView.as_view(), name='hello'),
 
     

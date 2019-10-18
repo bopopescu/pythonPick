@@ -15,7 +15,7 @@ from django.http import QueryDict
 
 
 class TopicController(APIView):
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request, topicID):
         try:
             topic = Topic.objects.get(topicID=topicID)
@@ -47,9 +47,9 @@ class TopicController(APIView):
         return JsonResponse({"status": 204, "message": "Successfully deleted"}, safe=False, status=204)
 
 class TopicsController(APIView):
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
-
+        
         topics = Topic.objects.all()
         topic_list = serializers.serialize('json', topics)
         return HttpResponse(topic_list, content_type="text/json-comment-filtered", status=200)

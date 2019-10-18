@@ -1,5 +1,7 @@
 from django.db import models
 from hello.submodels.topic import *
+from django.conf import settings
+
 
 class PictureManager(models.Manager):
     def create_instance(self, pictureUrl, likes, dislikes, numberOfComments,topicID, authorID):
@@ -16,5 +18,8 @@ class Picture(models.Model):
     numberOfComments = models.IntegerField()
     # foreign key in the
     topicID = models.ForeignKey(Topic, on_delete=models.CASCADE, default='UNSPECIFIED')
-    authorID = models.CharField(max_length=20)
+    authorID = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
     objects = PictureManager()

@@ -9,7 +9,7 @@ class TopicManager(models.Manager):
 
 class Topic(models.Model):
     topicID = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     numberOfPhotos = models.IntegerField()
     tags = models.CharField(max_length=100, default="photo")
     objects = TopicManager()

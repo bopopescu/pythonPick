@@ -15,7 +15,7 @@ from django.core import serializers
 
 class PictureController(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request, topicName, pictureID):
+    def get(self, request, topicID, pictureID):
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:
@@ -23,35 +23,38 @@ class PictureController(APIView):
         picture_list = serializers.serialize('json', [picture, ])
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
 
-    def post(self, request, topicName, pictureID):
+    def post(self, request, topicID, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def put(self, request, topicName, pictureID):
+    def put(self, request, topicID, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
-    def delete(self, request, topicName, pictureID):
+    def delete(self, request, topicID, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 
 
-class Pictures(APIView):
+class PicturesController(APIView):
     #permission_classes = (IsAuthenticated,)
-    def get(self, request, topicName):
+    def get(self, request, topicID):
         try:
-            topic = Topic.objects.get(name=topicName)
-            picture1 = Picture.objects.create_instance(
-                "asfdasasdasdf.jpeg", 0, 15, 5, topic, "adaaasd")
-            pictures = Picture.objects.filter(topicName=topicName)
+            topic = Topic.objects.get(topicID=topicID)
+            pictures = Picture.objects.filter(topicID=topicID)
             picture_list = serializers.serialize('json', pictures)
-        except:
-            return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
+        except Exception as e:
+            return JsonResponse({"status": 422, "message": str(e)}
+            , safe=False, status=422)
     
-        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
+        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=200)
 
-    def post(self, request, topicName):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+    def post(self, request, topicID):
+        try:
+            pictureUrl = request.POST.get("pictureUrl")
+            authorID = request.POST.get("authorID")
+            topic = Topic.objects.get(topicID=topicID)
+            picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
+             likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID= authorID)
+        except Exception as e:
+            return JsonResponse({"status": 422, "message": str(e)}
+            , safe=False, status=422)
 
-    def put(self, request, topicName):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
-
-    def delete(self, request, topicName):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        return JsonResponse({"status": 201, "message": "Object succesfully created"}, safe=False, status=201)

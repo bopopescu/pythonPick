@@ -22,10 +22,7 @@ class CommentController(APIView):
             return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
         comment_list = serializers.serialize('json', [comment, ])
         return HttpResponse(comment_list, content_type="text/json-comment-filtered", status=201)
-
-    def post(self, request, topicName, pictureID, commentID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
-
+        
     def put(self, request, topicName, pictureID, commentID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
 

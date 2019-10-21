@@ -50,9 +50,10 @@ class PicturesController(APIView):
         try:
             pictureUrl = request.POST.get("pictureUrl")
             authorID = request.POST.get("authorID")
+            user = request.user 
             topic = Topic.objects.get(topicID=topicID)
-            picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
-             likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID= authorID)
+            #picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
+            #likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID= authorID)
         except Exception as e:
             return JsonResponse({"status": 422, "message": str(e)}
             , safe=False, status=422)

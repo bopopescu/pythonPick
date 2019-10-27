@@ -5,13 +5,14 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.core import serializers
 
+import traceback
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from hello.models import *
 from django.core import serializers
-
 
 class PictureController(APIView):
     #permission_classes = (IsAuthenticated,)
@@ -21,7 +22,9 @@ class PictureController(APIView):
         except:
             return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
         picture_list = serializers.serialize('json', [picture, ])
+        
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
+        
 
     def post(self, request, topicID, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
@@ -43,7 +46,7 @@ class PicturesController(APIView):
         except Exception as e:
             return JsonResponse({"status": 422, "message": str(e)}
             , safe=False, status=422)
-    
+        
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=200)
 
     def post(self, request, topicID):

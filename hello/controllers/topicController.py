@@ -53,10 +53,13 @@ class TopicsController(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
         
-        topics = Topic.objects.all()
-        topic_list = serializers.serialize('json', topics)
+        try:
+            topics = Topic.objects.all()
+            topic_list = serializers.serialize('json', topics)
+        except Exception as e:
+            return JsonResponse({"status": StatusCodes.FAILED_GET, "message": str(e)}, safe=False, status=StatusCodes.FAILED_GET)
+        
         return HttpResponse(topic_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
-
     
     def post(self, request):
 

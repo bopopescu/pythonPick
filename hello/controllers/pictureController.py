@@ -46,8 +46,8 @@ class PicturesController(APIView):
             pictures = Picture.objects.filter(topicID=topicID)
             picture_list = serializers.serialize('json', pictures)
         except Exception as e:
-            return JsonResponse({"status": 422, "message": str(e)}
-            , safe=False, status=422)
+            return JsonResponse({"status": StatusCodes.FAILED_GET, "message": str(e)}
+                                , safe=False, status=StatusCodes.FAILED_GET)
         
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=200)
 

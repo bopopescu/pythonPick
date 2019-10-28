@@ -14,16 +14,18 @@ from rest_framework.decorators import api_view, permission_classes
 from hello.models import *
 from django.core import serializers
 
+from hello.submodels.statusCodes import StatusCodes
+
 class PictureController(APIView):
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request, topicID, pictureID):
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:
-            return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=422)
-        picture_list = serializers.serialize('json', [picture, ])
-        
-        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=201)
+            return JsonResponse({"status": 422, "message": "Can't get the object from database"}, safe=False, status=StatusCodes.FAILED_GET)
+        picture_list = serializers.serialize('json', [picture])
+        trimmed_result = picture_list[1:-1]
+        return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
         
 
     def post(self, request, topicID, pictureID):
@@ -37,7 +39,7 @@ class PictureController(APIView):
 
 
 class PicturesController(APIView):
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     def get(self, request, topicID):
         try:
             topic = Topic.objects.get(topicID=topicID)

@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.test import Client
 import json
-
 import os
 
 from django.http import HttpRequest
@@ -164,17 +163,56 @@ class AuthorizedApiCalls(TestCase):
         topicCount = Topic.objects.count()
         response = self.client.post('/api/topics/', {'topicNameaa': 'birds', 'tags': 'sparrow chiken'}, **
                                     {'wsgi.url_scheme': 'https'})
-
+        updatedCount = topicCount + 1
         self.assertEquals(response.status_code, StatusCodes.FAILED_POST)
-        updatedTopicCount = Topic.objects.count()
-        topicCount = topicCount + 1
-        self.assertEqual(topicCount, updatedTopicCount)
+        self.assertNotEqual(topicCount, updatedCount)
 
-    def test_get_Topic_by_id_with_token(self):
+
+    def test_correct_put_Topic_with_token(self):
+        topicCount = Topic.objects.count()
+        response = self.client.put('/api/topics/1/', {'topicName': 'birds', 'tags': 'chiko koko achiken'}, **
+                                    {'wsgi.url_scheme': 'https'})
+
+        obj = Topic.objects.get(pk=1)
+        field_name = 'tags'
+        field_value = getattr(obj, field_name)
+
+        self.assertEquals(response.status_code, StatusCodes.SUCCESFUL_PUT)
+        self.assertEqual(field_value, 'chiko koko achiken')
+
+    def test_incorrect_put_Topic_with_token(self):
+        response = self.client.put('/api/topics/1/', {'topicNamess': 'birds', 'tagss': 'aaaachiko koko achiken'}, **
+                                   {'wsgi.url_scheme': 'https'})
+
+        self.assertEquals(response.status_code, StatusCodes.FAILED_PUT)
+
+    def test_correct_get_Topic_by_id_with_token(self):
         response = self.client.get('/api/topics/1/', **
                                    {'wsgi.url_scheme': 'https'})
 
         self.assertEquals(response.status_code, 200)
+
+    def test_incorrect_get_Topic_by_id_with_token(self):
+        response = self.client.get('/api/topics/9999/', **
+                                   {'wsgi.url_scheme': 'https'})
+
+        self.assertEquals(response.status_code, StatusCodes.FAILED_GET)
+
+    def test_correct_delete_Topic_with_token(self):
+        topicCount = Topic.objects.count()
+        response = self.client.delete('/api/topics/1/', **
+                                   {'wsgi.url_scheme': 'https'})
+
+        self.assertEquals(response.status_code, StatusCodes.SUCCESFUL_DELETE)
+        self.assertEqual(Topic.objects.count(), topicCount-1)
+
+    def test_incorrect_delete_Topic_with_token(self):
+        topicCount = Topic.objects.count()
+        response = self.client.delete('/api/topics/9999/', **
+                                      {'wsgi.url_scheme': 'https'})
+
+        self.assertEquals(response.status_code, StatusCodes.FAILED_DELETE)
+        self.assertEqual(Topic.objects.count(), topicCount)
 
     def test_get_Pictures_with_token(self):
         response = self.client.get('/api/topics/1/pictures/', **

@@ -24,32 +24,61 @@ class CommentController(APIView):
         return HttpResponse(comment_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
         
     def put(self, request, topicID, pictureID, commentID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        try:
+            rating = request.POST.get("rating")
+            previousComment = Comment.objects.get(
+                commentID=commentID)
+            if rating == "like":
+                previousRating = getattr(previousComment, "likes")
+                newRating = previousRating + 1
+                Comment.objects.filter(
+                    commentID=commentID).update(likes=newRating)
+            elif rating == "dislike":
+                previousRating = getattr(previousComment, "dislikes")
+                newRating = previousRating + 1
+                Comment.objects.filter(
+                    pictureID=pictureID).update(dislikes=newRating)
+            else:
+                return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": "invalid rating"}, safe=False, status=StatusCodes.FAILED_PUT)
+        except Exception as e:
+             return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": str(e)}, safe=False, status=StatusCodes.FAILED_PUT)
+
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_PUT, "message": "Picture rated"}, safe=False, status=StatusCodes.SUCCESFUL_PUT)
 
     def delete(self, request, topicID, pictureID, commentID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        try:
+            Comment.objects.get(commentID=commentID).delete()
+        except Exception as e:
+             return JsonResponse({"status": StatusCodes.FAILED_DELETE, "message": str(e)}, safe=False, status=StatusCodes.FAILED_DELETE)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_DELETE, "message": "Successfully deleted"}, safe=False, status=StatusCodes.SUCCESFUL_DELETE)
 
 
 class Comments(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, topicID, pictureID):
         try:
-            picture = Picture.objects.get(pictureID=pictureID)
-            comment1 = Comment.objects.create_instance(
-                "Labai grazi foto", 0, 15, "aasdasd", picture)
             comments = Comment.objects.filter(pictureID=pictureID)
-            comment_list = serializers.serialize('json', comments)
-        except:
-            return JsonResponse({"status": StatusCodes.FAILED_GET, "message": "Can't get the object from database"}, safe=False, status=StatusCodes.FAILED_GET)
-
-        return HttpResponse(comment_list, content_type="text/json-comment-filtered",
-                     status=StatusCodes.SUCCESFUL_GET)
+            comments_list = serializers.serialize('json', comments)
+        except Exception as e:
+            return JsonResponse({"status": StatusCodes.FAILED_GET, "message": str(e)}
+                                , safe=False, status=StatusCodes.FAILED_GET)
+        
+        return HttpResponse(comments_list, content_type="text/json-comment-filtered", status=200)
 
     def post(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        try:
+            commentText = request.POST.get("commentText")
+            username = request.user.username
+            user = User.objects.get(username=username)
+            picture = Picture.objects.get(pictureID=pictureID)
+            comment = Comment.objects.create_instance(commentText=commentText,
+                                                      likes=0, dislikes=0, authorID=user, pictureID=picture)
 
-    def put(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+            previousRating = getattr(picture, "numberOfComments")
+            newRating = previousRating + 1
+            Picture.objects.filter(
+                pictureID=pictureID).update(numberOfComments=newRating)
+        except Exception as e:
+            return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}, safe=False, status=StatusCodes.FAILED_POST)
 
-    def delete(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_POST, "message": "Object succesfully created"}, safe=False, status=StatusCodes.SUCCESFUL_POST)

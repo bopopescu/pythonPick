@@ -16,8 +16,8 @@ urlpatterns = [
 
     path('api/topics/<int:topicID>/pictures/',
          pictureController.PicturesController.as_view(), name='Pictures'),
-
-    path('api/topics/<int:topicID>/pictures/<int:pictureID>/<str:rating>/',
+     
+    path('api/topics/<int:topicID>/pictures/<int:pictureID>/',
          pictureController.PictureController.as_view(), name='Pictures'),
 
     path('api/topics/<int:topicID>/pictures/<int:pictureID>/comments/',

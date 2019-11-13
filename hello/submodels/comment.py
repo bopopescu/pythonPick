@@ -15,7 +15,10 @@ class Comment(models.Model):
     commentText = models.CharField(max_length=255)
     likes = models.IntegerField()
     dislikes = models.IntegerField()
-    authorID = models.CharField(max_length=20)
+    authorID = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
     pictureID = models.ForeignKey(
         Picture, on_delete=models.CASCADE, default=0)
     objects = CommentManager()

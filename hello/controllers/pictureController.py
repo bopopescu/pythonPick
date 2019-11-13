@@ -18,7 +18,7 @@ from hello.submodels.statusCodes import StatusCodes
 
 class PictureController(APIView):
     permission_classes = (IsAuthenticated,)
-    def get(self, request, topicID, pictureID, rating):
+    def get(self, request, topicID, pictureID):
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:
@@ -27,20 +27,35 @@ class PictureController(APIView):
         trimmed_result = picture_list[1:-1]
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
         
-    def put(self, request, topicID, pictureID, rating):
+    def put(self, request, topicID, pictureID):
         try:
-            previousPicture = Picture.objects.filter(
+            rating = request.POST.get("rating")
+            previousPicture = Picture.objects.get(
                 pictureID=pictureID)
-            previousRating = getattr(previousPicture, previousPicture.likes)
-            Picture.objects.filter(pictureID=pictureID).update(likes=15)
+            if rating == "like":
+                previousRating = getattr(previousPicture, "likes")
+                newRating = previousRating + 1
+                Picture.objects.filter(
+                    pictureID=pictureID).update(likes=newRating)
+            elif rating == "dislike":
+                previousRating = getattr(previousPicture, "dislikes")
+                newRating = previousRating + 1
+                Picture.objects.filter(
+                    pictureID=pictureID).update(dislikes=newRating)
+            else:
+                return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": "invalid rating"}, safe=False, status=StatusCodes.FAILED_PUT)
         except Exception as e:
              return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": str(e)}
             , safe=False, status=StatusCodes.FAILED_PUT)
 
-        return JsonResponse({"status": StatusCodes.SUCCESFUL_PUT, "message": "Picture upvoted"}, safe=False, status=StatusCodes.SUCCESFUL_PUT)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_PUT, "message": "Picture rated"}, safe=False, status=StatusCodes.SUCCESFUL_PUT)
 
     def delete(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        try:
+            Picture.objects.get(pictureID=pictureID).delete()
+        except Exception as e:
+             return JsonResponse({"status": StatusCodes.FAILED_DELETE, "message": str(e)}, safe=False, status=StatusCodes.FAILED_DELETE)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_DELETE, "message": "Successfully deleted"}, safe=False, status=StatusCodes.SUCCESFUL_DELETE)
 
 
 class PicturesController(APIView):
@@ -65,7 +80,6 @@ class PicturesController(APIView):
             picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
             likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID=user)
         except Exception as e:
-            return JsonResponse({"status": 422, "message": str(e)}
-            , safe=False, status=422)
+            return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}, safe=False, status=StatusCodes.FAILED_POST)
 
-        return JsonResponse({"status": 201, "message": "Object succesfully created"}, safe=False, status=201)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_POST, "message": "Object succesfully created"}, safe=False, status=StatusCodes.SUCCESFUL_POST)

@@ -18,7 +18,7 @@ from hello.submodels.statusCodes import StatusCodes
 
 class PictureController(APIView):
     permission_classes = (IsAuthenticated,)
-    def get(self, request, topicID, pictureID):
+    def get(self, request, topicID, pictureID, rating):
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:
@@ -27,12 +27,17 @@ class PictureController(APIView):
         trimmed_result = picture_list[1:-1]
         return HttpResponse(picture_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
         
+    def put(self, request, topicID, pictureID, rating):
+        try:
+            previousPicture = Picture.objects.filter(
+                pictureID=pictureID)
+            previousRating = getattr(previousPicture, previousPicture.likes)
+            Picture.objects.filter(pictureID=pictureID).update(likes=15)
+        except Exception as e:
+             return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": str(e)}
+            , safe=False, status=StatusCodes.FAILED_PUT)
 
-    def post(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
-
-    def put(self, request, topicID, pictureID):
-        return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
+        return JsonResponse({"status": StatusCodes.SUCCESFUL_PUT, "message": "Picture upvoted"}, safe=False, status=StatusCodes.SUCCESFUL_PUT)
 
     def delete(self, request, topicID, pictureID):
         return JsonResponse({"status": 403, "message": "Forbidden"}, safe=False, status=403)
@@ -54,11 +59,11 @@ class PicturesController(APIView):
     def post(self, request, topicID):
         try:
             pictureUrl = request.POST.get("pictureUrl")
-            authorID = request.POST.get("authorID")
-            user = request.user 
+            username = request.user.username
+            user = User.objects.get(username=username)
             topic = Topic.objects.get(topicID=topicID)
-            #picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
-            #likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID= authorID)
+            picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
+            likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID=user)
         except Exception as e:
             return JsonResponse({"status": 422, "message": str(e)}
             , safe=False, status=422)

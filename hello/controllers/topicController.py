@@ -32,7 +32,7 @@ class TopicController(APIView):
 
     def put(self, request, topicID):
         try:
-            tags = request.POST.get("tags")
+            tags = request.data.get("tags")
             Topic.objects.filter(topicID=topicID).update(tags=tags)
         except Exception as e:
              return JsonResponse({"status": StatusCodes.FAILED_PUT, "message": str(e)}
@@ -66,8 +66,8 @@ class TopicsController(APIView):
         try:
             username = request.user.username
             user = User.objects.get(username=username)
-            topicName = request.POST.get("topicName")
-            tags = request.POST.get("tags")
+            topicName = request.data.get("topicName")
+            tags = request.data.get("tags")
             topic = Topic.objects.create_instance(topicName, 0, tags, user)
         except Exception as e:
             return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}

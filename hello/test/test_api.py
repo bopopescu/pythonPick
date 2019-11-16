@@ -97,7 +97,7 @@ class AuthorizedApiCallsWithNoRecordsInDatabase(TestCase):
         self.assertEquals(response.status_code, StatusCodes.FAILED_GET)
 
     def test_get_Comments_with_token(self):
-        response = self.client.get('/api/topics/1/pictures/1/comments/', **
+        response = self.client.get('/api/topics/1/pictures/9999/comments/', **
                                    {'wsgi.url_scheme': 'https'})
 
         self.assertEquals(response.status_code, StatusCodes.FAILED_GET)

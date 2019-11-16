@@ -29,7 +29,7 @@ class PictureController(APIView):
         
     def put(self, request, topicID, pictureID):
         try:
-            rating = request.POST.get("rating")
+            rating = request.data.get("rating")
             previousPicture = Picture.objects.get(
                 pictureID=pictureID)
             if rating == "like":
@@ -73,7 +73,7 @@ class PicturesController(APIView):
 
     def post(self, request, topicID):
         try:
-            pictureUrl = request.POST.get("pictureUrl")
+            pictureUrl = request.data.get("pictureUrl")
             username = request.user.username
             user = User.objects.get(username=username)
             topic = Topic.objects.get(topicID=topicID)

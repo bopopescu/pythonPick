@@ -25,7 +25,7 @@ class CommentController(APIView):
         
     def put(self, request, topicID, pictureID, commentID):
         try:
-            rating = request.POST.get("rating")
+            rating = request.data.get("rating")
             previousComment = Comment.objects.get(
                 commentID=commentID)
             if rating == "like":
@@ -62,12 +62,15 @@ class Comments(APIView):
         except Exception as e:
             return JsonResponse({"status": StatusCodes.FAILED_GET, "message": str(e)}
                                 , safe=False, status=StatusCodes.FAILED_GET)
+        if comments:
+            return HttpResponse(comments_list, content_type="text/json-comment-filtered", status=200)
+        else:
+            return JsonResponse({"status": StatusCodes.FAILED_GET, "message": "found no records"}, safe=False, status=StatusCodes.FAILED_GET)
         
-        return HttpResponse(comments_list, content_type="text/json-comment-filtered", status=200)
 
     def post(self, request, topicID, pictureID):
         try:
-            commentText = request.POST.get("commentText")
+            commentText = request.data.get("commentText")
             username = request.user.username
             user = User.objects.get(username=username)
             picture = Picture.objects.get(pictureID=pictureID)

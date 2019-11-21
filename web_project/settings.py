@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'corsheaders',
+    'django_test_tools',
     'hello',
     "sslserver"
 ]

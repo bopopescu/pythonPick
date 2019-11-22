@@ -13,14 +13,27 @@ from hello.models import *
 from django.core import serializers
 
 from hello.submodels.statusCodes import StatusCodes
+
+from deprecated import deprecated
+
+
+@deprecated(version='1.2.1', reason="You should use another function")
+def pasenusFunkcija():
+        print()
+
 class CommentController(APIView):
+
+    
+
     permission_classes = (IsAuthenticated,)
     def get(self, request, topicID, pictureID, commentID):
         try:
             comment = Comment.objects.get(commentID=commentID)
         except:
             return JsonResponse({"status": StatusCodes.FAILED_GET, "message": "Can't get the object from database"}, safe=False, status=StatusCodes.FAILED_GET)
-        comment_list = serializers.serialize('json', [comment, ])
+        comment_list = serializers.serialize('json', [comment, ])  # ????
+
+        pasenusFunkcija()
         return HttpResponse(comment_list, content_type="text/json-comment-filtered", status=StatusCodes.SUCCESFUL_GET)
         
     def put(self, request, topicID, pictureID, commentID):

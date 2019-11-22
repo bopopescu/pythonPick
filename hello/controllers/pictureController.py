@@ -18,7 +18,12 @@ from hello.submodels.statusCodes import StatusCodes
 
 class PictureController(APIView):
     permission_classes = (IsAuthenticated,)
+    
+
     def get(self, request, topicID, pictureID):
+
+
+
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:

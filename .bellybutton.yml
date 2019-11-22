@@ -1,0 +1,22 @@
+settings:
+  all_files: &all_files !settings
+    included:
+      - ~+/hello/*
+    excluded:
+      - ~+/.tox/*
+    allow_ignore: yes
+
+default_settings: *all_files
+
+rules:
+  ExampleRule:
+    description: "Empty module."
+    expr: /Module/body[not(./*)]
+    example: ""
+    instead: |
+      """This module has a docstring."""
+  DeprecatedFnCall:
+    description: "pasenusFunkcija` will be deprecated in v9.1.2. Please use `atnaujintaFunkcija` instead."
+    expr: //Call[func/Name/@id='pasenusFunkcija']
+    example: "pasenusFunkcija()"
+    instead: "atnaujintaFunkcija()"

@@ -50,7 +50,7 @@ class TopicController(APIView):
         return JsonResponse({"status": StatusCodes.SUCCESFUL_DELETE, "message": "Successfully deleted"}, safe=False, status=StatusCodes.SUCCESFUL_DELETE)
 
 class TopicsController(APIView):
-   
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         
         try:

@@ -4,9 +4,9 @@ from django.conf import settings
 
 
 class PictureManager(models.Manager):
-    def create_instance(self, pictureUrl, likes, dislikes, numberOfComments,topicID, authorID):
+    def create_instance(self, pictureUrl, likes, dislikes, numberOfComments,topicID, authorID, authorUsername):
         instance = self.create(pictureUrl = pictureUrl, likes=likes, dislikes=dislikes,
-                               numberOfComments=numberOfComments, topicID = topicID, authorID=authorID)
+                               numberOfComments=numberOfComments, topicID = topicID, authorID=authorID, authorUsername= authorUsername)
         # do something with the book
         return instance
 
@@ -22,6 +22,7 @@ class Picture(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    authorUsername = models.CharField(max_length=255)
     objects = PictureManager()
     def get_model_fields(self):
         return self._meta.fields

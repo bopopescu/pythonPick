@@ -8,3 +8,5 @@ class StatusCodes:
     FAILED_GET = 423
     FAILED_PUT = 424
     FAILED_DELETE = 425
+
+    FORBIDDEN = 403

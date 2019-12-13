@@ -21,9 +21,6 @@ class PictureController(APIView):
     
 
     def get(self, request, topicID, pictureID):
-
-
-
         try:
             picture = Picture.objects.get(pictureID=pictureID)
         except:
@@ -57,7 +54,17 @@ class PictureController(APIView):
 
     def delete(self, request, topicID, pictureID):
         try:
-            Picture.objects.get(pictureID=pictureID).delete()
+            username = request.user.username
+            user = User.objects.get(username=username)
+            picture = Picture.objects.get(pictureID=pictureID)
+
+            trueAuthorUsername = getattr(picture, "authorUsername")
+            if trueAuthorUsername == username:
+                Picture.objects.get(pictureID=pictureID).delete()
+            else:
+                return JsonResponse({"status": StatusCodes.FORBIDDEN, "message": "Delte forbidden"}, safe=False, status=StatusCodes.FORBIDDEN)
+
+           
         except Exception as e:
              return JsonResponse({"status": StatusCodes.FAILED_DELETE, "message": str(e)}, safe=False, status=StatusCodes.FAILED_DELETE)
         return JsonResponse({"status": StatusCodes.SUCCESFUL_DELETE, "message": "Successfully deleted"}, safe=False, status=StatusCodes.SUCCESFUL_DELETE)
@@ -83,7 +90,7 @@ class PicturesController(APIView):
             user = User.objects.get(username=username)
             topic = Topic.objects.get(topicID=topicID)
             picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
-            likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID=user)
+            likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID=user, authorUsername=username)
         except Exception as e:
             return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}, safe=False, status=StatusCodes.FAILED_POST)
 

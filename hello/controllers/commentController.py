@@ -23,8 +23,6 @@ def pasenusFunkcija():
 
 class CommentController(APIView):
 
-    
-
     permission_classes = (IsAuthenticated,)
     def get(self, request, topicID, pictureID, commentID):
         try:
@@ -88,7 +86,7 @@ class Comments(APIView):
             user = User.objects.get(username=username)
             picture = Picture.objects.get(pictureID=pictureID)
             comment = Comment.objects.create_instance(commentText=commentText,
-                                                      likes=0, dislikes=0, authorID=user, pictureID=picture)
+                                                      likes=0, dislikes=0, authorID=user, pictureID=picture, authorUsername=username)
 
             previousRating = getattr(picture, "numberOfComments")
             newRating = previousRating + 1

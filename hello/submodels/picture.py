@@ -23,6 +23,7 @@ class Picture(models.Model):
         on_delete=models.CASCADE,
     )
     authorUsername = models.CharField(max_length=255)
+    
     objects = PictureManager()
     def get_model_fields(self):
         return self._meta.fields

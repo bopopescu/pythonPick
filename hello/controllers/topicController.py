@@ -68,7 +68,12 @@ class TopicsController(APIView):
             user = User.objects.get(username=username)
             topicName = request.data.get("topicName")
             tags = request.data.get("tags")
-            topic = Topic.objects.create_instance(topicName, 0, tags, user)
+            thumbnailURL = request.data.get("thumbnailURL")
+
+
+
+            topic = Topic.objects.create_instance(
+                topicName, 0, tags, user, thumbnailURL)
         except Exception as e:
             return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}
             , safe=False, status=StatusCodes.FAILED_POST)

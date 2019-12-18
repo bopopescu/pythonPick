@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 
 
 class TopicManager(models.Manager):
-    def create_instance(self, name, numberOfPhotos, tags, authorID):
-        instance = self.create(name=name, numberOfPhotos=numberOfPhotos, tags=tags, authorID=authorID)
+    def create_instance(self, name, numberOfPhotos, tags, authorID, thumbnailURL):
+        instance = self.create(name=name, numberOfPhotos=numberOfPhotos,
+                               tags=tags, authorID=authorID, thumbnailURL=thumbnailURL)
         # do something with the book
         return instance
 
@@ -14,6 +15,7 @@ class TopicManager(models.Manager):
 class Topic(models.Model):
     topicID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, unique=True)
+    thumbnailURL = models.CharField(max_length=100)
     numberOfPhotos = models.IntegerField()
     authorID = models.ForeignKey(
         User,

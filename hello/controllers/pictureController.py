@@ -86,11 +86,12 @@ class PicturesController(APIView):
     def post(self, request, topicID):
         try:
             pictureUrl = request.data.get("pictureUrl")
+            description = request.data.get("description")
             username = request.user.username
             user = User.objects.get(username=username)
             topic = Topic.objects.get(topicID=topicID)
             picture = Picture.objects.create_instance(pictureUrl = pictureUrl,
-            likes=0, dislikes= 0, numberOfComments =0, topicID = topic, authorID=user, authorUsername=username)
+                                                      likes=0, dislikes=0, numberOfComments=0, topicID=topic, authorID=user, authorUsername=username, description=description)
         except Exception as e:
             return JsonResponse({"status": StatusCodes.FAILED_POST, "message": str(e)}, safe=False, status=StatusCodes.FAILED_POST)
 

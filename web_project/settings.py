@@ -114,7 +114,7 @@ DATABASES = {
     }
 }
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

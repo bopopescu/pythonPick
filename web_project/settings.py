@@ -1,4 +1,5 @@
 
+import django_heroku
 import os
 from datetime import timedelta
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'web_project.urls'
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
-
+django_heroku.settings(locals())
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),

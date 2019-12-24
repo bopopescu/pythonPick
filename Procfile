@@ -1,1 +1,1 @@
-web: python manage.py runserver localhost:5000
+web: gunicorn web_project.wsgi --log-file -
